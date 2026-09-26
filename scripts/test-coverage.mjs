@@ -1,4 +1,4 @@
-import { mkdirSync } from 'node:fs';
+import { mkdirSync, readdirSync } from 'node:fs';
 import path from 'node:path';
 import { spawnSync } from 'node:child_process';
 
@@ -17,7 +17,11 @@ const args = [
 if (lcov) {
   args.push('--test-reporter=lcov', `--test-reporter-destination=${path.join(coverageDir, 'lcov.info')}`);
 }
-args.push('tests/*.test.js');
+args.push(
+  ...readdirSync('tests')
+    .filter((name) => name.endsWith('.test.js'))
+    .map((name) => path.join('tests', name)),
+);
 
 const result = spawnSync(process.execPath, args, {
   stdio: 'inherit',

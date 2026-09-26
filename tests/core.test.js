@@ -41,7 +41,7 @@ test('paths drop the category and follow each host', () => {
   assert.equal(cursor.skills, path.join('/home/me', '.cursor', 'skills'));
   assert.equal(cursor.mcpFile, path.join('/home/me', '.cursor', 'mcp.json'));
   const project = destRoots({ target: 'cursor', scope: 'project', directory: '/repo', home: '/home/me' });
-  assert.equal(project.agents, path.join('/repo', '.cursor', 'agents'));
+  assert.equal(project.agents, path.join(path.resolve('/repo'), '.cursor', 'agents'));
   const codex = destRoots({ target: 'codex', scope: 'global', home: '/home/me' });
   assert.equal(codex.skills, path.join('/home/me', '.agents', 'skills'));
   assert.equal(codex.mcpFile, path.join('/home/me', '.codex', 'config.toml'));
@@ -141,8 +141,10 @@ test('install writes destinations and doctor reports a broken skill', async () =
   await installRecord({ target: 'cursor', roots: cursorRoots, record: resolveFromIndex(index, 'skill', 'creative-design/frontend-design'), yes: true, catalog });
   await installRecord({ target: 'cursor', roots: cursorRoots, record: resolveFromIndex(index, 'command', 'testing/generate-tests'), yes: true, catalog });
   await installRecord({ target: 'cursor', roots: cursorRoots, record: resolveFromIndex(index, 'mcp', 'web/web-fetch'), yes: true, catalog });
-  const mode = await fs.stat(path.join(cursorRoots.skills, 'frontend-design', 'scripts', 'run.sh'));
-  assert.equal(mode.mode & 0o111, 0o111);
+  const scriptPath = path.join(cursorRoots.skills, 'frontend-design', 'scripts', 'run.sh');
+  const mode = await fs.stat(scriptPath);
+  assert.equal(mode.isFile(), true);
+  if (process.platform !== 'win32') assert.equal(mode.mode & 0o111, 0o111);
   const codexRoots = destRoots({ target: 'codex', scope: 'global', home });
   await installRecord({ target: 'codex', roots: codexRoots, record: resolveFromIndex(index, 'command', 'testing/generate-tests'), yes: true, catalog });
   await installRecord({ target: 'codex', roots: codexRoots, record: resolveFromIndex(index, 'agent', 'development-team/frontend-developer'), yes: true, catalog });

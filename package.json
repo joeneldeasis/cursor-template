@@ -33,7 +33,7 @@
     "lint": "eslint .",
     "lint:fix": "eslint . --fix",
     "typecheck": "tsc -p tsconfig.json --noEmit",
-    "test": "node --test \"tests/*.test.js\"",
+    "test": "node --test tests/cli.test.js tests/core.test.js",
     "test:coverage": "node scripts/test-coverage.mjs",
     "package:check": "node scripts/check-package.mjs",
     "smoke": "node scripts/pack-smoke.mjs",
