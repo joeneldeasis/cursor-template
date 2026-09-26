@@ -1,0 +1,18 @@
+import js from '@eslint/js';
+import tseslint from 'typescript-eslint';
+
+const nodeGlobals = {
+  Buffer: 'readonly',
+  console: 'readonly',
+  process: 'readonly',
+};
+
+export default tseslint.config(
+  { ignores: ['dist/**', 'coverage/**', 'node_modules/**'] },
+  js.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    files: ['**/*.{js,mjs,cjs}'],
+    languageOptions: { globals: nodeGlobals },
+  },
+);
