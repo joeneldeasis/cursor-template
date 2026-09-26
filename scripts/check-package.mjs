@@ -44,7 +44,7 @@ if (pkg.bugs?.url !== `https://${repository}/issues`) fail(`package.json bugs.ur
 if (pkg.homepage !== `https://${repository}#readme`) fail(`package.json homepage must be https://${repository}#readme`);
 
 const bin = exists('bin/cli.js') ? readFileSync('bin/cli.js', 'utf8') : '';
-if (!bin.startsWith('#!/usr/bin/env node\n')) fail('bin/cli.js must start with a Node shebang');
+if (!bin.replace(/\r\n/g, '\n').startsWith('#!/usr/bin/env node\n')) fail('bin/cli.js must start with a Node shebang');
 for (const relativePath of ['dist/index.js', 'dist/index.d.ts', 'bin/cli.js', 'README.md', 'LICENSE']) {
   if (!exists(relativePath)) fail(`required path is missing on disk: ${relativePath}`);
 }
